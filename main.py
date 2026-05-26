@@ -21,18 +21,20 @@ def stream():
 
     url = f"https://www.youtube.com/watch?v={video_id}"
     ydl_opts = {
-        "format": "bestaudio[ext=webm]/bestaudio[ext=m4a]/bestaudio",
+        "format": "bestaudio/best",
         "quiet": True,
         "no_warnings": True,
         "skip_download": True,
         "extractor_args": {
             "youtube": {
-                "player_client": ["android_vr"],
+                "player_client": ["mweb"],
             }
         },
         "http_headers": {
-            "User-Agent": "com.google.android.youtube/19.09.37 (Linux; U; Android 11) gzip",
-        }
+            "User-Agent": "Mozilla/5.0 (Linux; Android 11; Pixel 5) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/90.0.4430.91 Mobile Safari/537.36",
+            "Accept-Language": "en-US,en;q=0.9",
+        },
+        "socket_timeout": 30,
     }
 
     try:
