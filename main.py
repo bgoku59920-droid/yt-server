@@ -21,62 +21,57 @@ def stream():
 
     url = f"https://www.youtube.com/watch?v={video_id}"
 
-    # Try multiple clients in order
-    clients = ["ios", "android_vr", "mweb", "android", "web"]
-
-    for client in clients:
-        try:
-            ydl_opts = {
-                "format": "bestaudio/best",
-                "quiet": True,
-                "no_warnings": True,
-                "skip_download": True,
-                "extractor_args": {
-                    "youtube": {
-                        "player_client": [client],
-                    }
-                },
-                "socket_timeout": 20,
+    ydl_opts = {
+        "format": "bestaudio/best",
+        "quiet": True,
+        "no_warnings": True,
+        "skip_download": True,
+        "username": "oauth2",
+        "password": "",
+        "extractor_args": {
+            "youtube": {
+                "player_client": ["ios"],
             }
+        },
+        "socket_timeout": 30,
+    }
 
-            with yt_dlp.YoutubeDL(ydl_opts) as ydl:
-                info = ydl.extract_info(url, download=False)
+    try:
+        with yt_dlp.YoutubeDL(ydl_opts) as ydl:
+            info = ydl.extract_info(url, download=False)
 
-            stream_url = None
-            best_abr = 0
-            for f in info.get("formats", []):
-                if f.get("vcodec", "none") != "none":
-                    continue
-                if not f.get("url"):
-                    continue
-                abr = f.get("abr") or f.get("tbr") or 0
-                if abr > best_abr:
-                    best_abr = abr
-                    stream_url = f["url"]
-
-            if not stream_url:
-                stream_url = info.get("url", "")
-            if not stream_url:
+        stream_url = None
+        best_abr = 0
+        for f in info.get("formats", []):
+            if f.get("vcodec", "none") != "none":
                 continue
+            if not f.get("url"):
+                continue
+            abr = f.get("abr") or f.get("tbr") or 0
+            if abr > best_abr:
+                best_abr = abr
+                stream_url = f["url"]
 
-            thumb = f"https://i.ytimg.com/vi/{video_id}/hqdefault.jpg"
-            thumbnails = info.get("thumbnails", [])
-            if thumbnails:
-                thumb = thumbnails[-1].get("url", thumb)
+        if not stream_url:
+            stream_url = info.get("url", "")
+        if not stream_url:
+            return jsonify({"error": "No stream URL found"}), 404
 
-            return jsonify({
-                "url":       stream_url,
-                "title":     info.get("title",    "Unknown"),
-                "artist":    info.get("uploader", "Unknown"),
-                "thumbnail": thumb,
-                "duration":  info.get("duration", 0),
-                "client":    client,
-            })
+        thumb = f"https://i.ytimg.com/vi/{video_id}/hqdefault.jpg"
+        thumbnails = info.get("thumbnails", [])
+        if thumbnails:
+            thumb = thumbnails[-1].get("url", thumb)
 
-        except Exception as e:
-            continue
+        return jsonify({
+            "url":       stream_url,
+            "title":     info.get("title",    "Unknown"),
+            "artist":    info.get("uploader", "Unknown"),
+            "thumbnail": thumb,
+            "duration":  info.get("duration", 0),
+        })
 
-    return jsonify({"error": "All clients failed — bot detection active"}), 500
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
 
 
 @app.route("/search")
