@@ -21,7 +21,7 @@ def stream():
 
     url = f"https://www.youtube.com/watch?v={video_id}"
     ydl_opts = {
-        "format": "bestaudio",
+        "format": "bestaudio/best",
         "quiet": True,
         "no_warnings": True,
         "skip_download": True,
@@ -29,7 +29,7 @@ def stream():
         "extractor_args": {
             "youtube": {
                 "player_client": ["default", "android"],
-                "formats": "missing_pot",
+                "include_missing_pot": ["true"],
             }
         },
         "socket_timeout": 30,
