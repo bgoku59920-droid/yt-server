@@ -21,16 +21,11 @@ def stream():
 
     url = f"https://www.youtube.com/watch?v={video_id}"
     ydl_opts = {
-        "format": "bestaudio[ext=m4a]/bestaudio[ext=webm]/bestaudio/best",
+        "format": "bestaudio",
         "quiet": True,
         "no_warnings": True,
         "skip_download": True,
         "cookiefile": "cookies.txt",
-        "extractor_args": {
-            "youtube": {
-                "player_client": ["ios"],
-            }
-        },
         "socket_timeout": 30,
     }
 
