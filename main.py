@@ -29,7 +29,7 @@ def stream():
         "extractor_args": {
             "youtube": {
                 "player_client": ["default", "android"],
-                "include_missing_pot": ["true"],
+                "formats": "missing_pot,ump",
             }
         },
         "socket_timeout": 30,
