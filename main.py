@@ -21,7 +21,7 @@ def stream():
 
     url = f"https://www.youtube.com/watch?v={video_id}"
     ydl_opts = {
-        "format": "bestaudio/best",
+        "format": "bestaudio[ext=m4a]/bestaudio[ext=webm]/bestaudio/best",
         "quiet": True,
         "no_warnings": True,
         "skip_download": True,
