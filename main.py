@@ -20,14 +20,12 @@ def stream():
         return jsonify({"error": "Missing id param"}), 400
 
     url = f"https://www.youtube.com/watch?v={video_id}"
-
     ydl_opts = {
         "format": "bestaudio/best",
         "quiet": True,
         "no_warnings": True,
         "skip_download": True,
-        "username": "oauth2",
-        "password": "",
+        "cookiefile": "cookies.txt",
         "extractor_args": {
             "youtube": {
                 "player_client": ["ios"],
@@ -85,6 +83,7 @@ def search():
         "no_warnings":   True,
         "extract_flat":  True,
         "skip_download": True,
+        "cookiefile":    "cookies.txt",
     }
 
     try:
